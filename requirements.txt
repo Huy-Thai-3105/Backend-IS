@@ -1,0 +1,4 @@
+flask
+vnstock3
+scikit-learn
+tensorflow
