@@ -28,30 +28,34 @@ def predict_stock_price(stock_name, number_of_days=30):
 
     # Dự đoán cho 30 ngày trước
     past_predictions = []
-    input_data = [scaled_data[len(scaled_data) - DAY_INTERVAL_LEN - 30:len(scaled_data) - 30].flatten()]
+    input_data  = [scaled_data[len(scaled_data) - DAY_INTERVAL_LEN - 30:len(scaled_data) - 30].flatten()]
+    append_data = [scaled_data[len(scaled_data) - 30:].flatten()]
+    print(append_data)
     
-    for _ in range(number_of_days):
+    for idx in range(number_of_days):
         x_input = np.array(input_data)
-        x_input = np.reshape(x_input, (x_input.shape[0], x_input.shape[1], 1))
+        x_input = np.reshape(x_input, (x_input.shape[0], x_input.shape[1], 1)) 
 
         y_predict = model.predict(x_input)
         predict_value = scaler.inverse_transform(y_predict)[0][0]
 
-        input_data = [np.append(input_data[0][1:], y_predict[0][0])]
+        input_data = [np.append(input_data[0][1:], append_data[0][idx])]
         past_predictions.append(float(predict_value))
+        
+        
 
     # Dự đoán cho 30 ngày tiếp theo
     future_predictions = []
     input_data = [scaled_data[len(scaled_data) - DAY_INTERVAL_LEN:].flatten()]
     
-    for _ in range(number_of_days):
+    for idx in range(number_of_days):
         x_input = np.array(input_data)
         x_input = np.reshape(x_input, (x_input.shape[0], x_input.shape[1], 1))
 
         y_predict = model.predict(x_input)
         predict_value = scaler.inverse_transform(y_predict)[0][0]
 
-        input_data = [np.append(input_data[0][1:], y_predict[0][0])]
+        input_data = [np.append(input_data[0][1:], append_data[0][idx])]
         future_predictions.append(float(predict_value))
 
     return {
