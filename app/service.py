@@ -17,13 +17,7 @@ def predict_stock_price(stock_name, number_of_days=30):
     model = tf.keras.models.load_model(f"MODEL/{stock_name}_LSTM_model.keras")
     
     # Lấy dữ liệu lịch sử
-    df = GLOBAL_STOCK.quote.history(
-        symbol=stock_name, 
-        start=(datetime.now() - pd.Timedelta(days=60)).strftime('%Y-%m-%d'),
-        end=datetime.now().strftime('%Y-%m-%d'), 
-        interval='1D'
-    )
-    
+    df = GLOBAL_STOCK.quote.history(symbol=stock_name, start='2018-01-01', end=datetime.now().strftime('%Y-%m-%d'), interval='1D')
     # Lấy 30 ngày gần nhất cho historical data
     historical_data = df.tail(30)['close'].tolist()
     
@@ -61,9 +55,9 @@ def predict_stock_price(stock_name, number_of_days=30):
         future_predictions.append(float(predict_value))
 
     return {
-        'historical_data': historical_data,     # 30 ngày gần nhất thực tế
-        'past_predictions': past_predictions,    # 30 ngày trước dự đoán
-        'future_predictions': future_predictions # 30 ngày sau dự đoán
+        'historical_data': historical_data,    
+        'past_predictions': past_predictions,    
+        'future_predictions': future_predictions 
     }
 
 def get_prediction(stock_code, number_of_days=30):
@@ -115,6 +109,7 @@ def get_stock_data(stock_code, start, end, interval='1D'):
         # Convert to string format for API call
         start_str = start.strftime('%Y-%m-%d')
         end_str = end.strftime('%Y-%m-%d')
+
 
         print(f"Fetching data for {stock_code} from {start_str} to {end_str} with interval {interval}")
         
